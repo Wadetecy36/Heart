@@ -34,6 +34,20 @@ export default function App() {
   const [ripples, setRipples] = useState<{ id: string; x: number; y: number; color: string }[]>([]);
   const [isHolding, setIsHolding] = useState(false);
   const [holdProgress, setHoldProgress] = useState(0);
+  const [bgParticles, setBgParticles] = useState<{ id: number; left: number; top: number; delay: number; duration: number; size: number }[]>([]);
+
+  // Generate background starry/love particles once upon loading
+  useEffect(() => {
+    const particles = Array.from({ length: 22 }).map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * -10, // Pre-warm the position delays so some start mid-flight
+      duration: 12 + Math.random() * 16,
+      size: 5 + Math.random() * 10,
+    }));
+    setBgParticles(particles);
+  }, []);
 
   // Synchronize audio synthesizer toggle
   useEffect(() => {
@@ -354,10 +368,91 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen w-full bg-gradient-to-b ${activeTheme.bg} text-neutral-200 font-sans relative overflow-x-hidden flex flex-col justify-between p-4 selection:bg-rose-500/20`}>
+    <div className={`min-h-screen w-full bg-[#030712] bg-gradient-to-b ${activeTheme.bg} text-neutral-200 font-sans relative overflow-x-hidden flex flex-col justify-between p-4 selection:bg-rose-500/20`}>
       
       {/* Decorative scanline overlay for subtle warmth */}
-      <div className="absolute inset-0 bg-neutral-950/10 scanlines pointer-events-none z-10"></div>
+      <div className="absolute inset-0 bg-neutral-950/20 scanlines pointer-events-none z-10 animate-pulse" style={{ animationDuration: '4s' }}></div>
+
+      {/* Modern High-Fidelity Ambient Backplane Grid */}
+      <div className="absolute inset-0 ambient-grid radial-fade opacity-80 pointer-events-none z-0"></div>
+
+      {/* Dynamic Ambient Glowing Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Orb Top Left */}
+        <motion.div
+          animate={{
+            x: [-60, 60, -60],
+            y: [-30, 30, -30],
+            scale: [1, 1.25, 1],
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-[110px] opacity-[0.22]"
+          style={{ backgroundColor: activeTheme.hex }}
+        />
+        
+        {/* Orb Bottom Right */}
+        <motion.div
+          animate={{
+            x: [60, -60, 60],
+            y: [30, -30, 30],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 27,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute -bottom-32 -right-32 w-[400px] h-[400px] rounded-full blur-[130px] opacity-[0.18]"
+          style={{ backgroundColor: activeTheme.hex }}
+        />
+
+        {/* Ambient Pulsating Halo Behind Main Workspace */}
+        <motion.div
+          animate={{
+            scale: [0.95, 1.15, 0.95],
+            opacity: [0.18, 0.32, 0.18],
+          }}
+          transition={{
+            duration: 4, // 4-second organic breath cycle
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[150px]"
+          style={{ backgroundColor: activeTheme.hex }}
+        />
+      </div>
+
+      {/* Floating Sparkly Cosmic Heart Dust Field */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {bgParticles.map((p) => (
+          <motion.div
+            key={p.id}
+            initial={{ y: '110vh', x: `${p.left}vw`, opacity: 0 }}
+            animate={{ 
+              y: '-10vh', 
+              opacity: [0, 0.45, 0.45, 0],
+            }}
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              delay: p.delay,
+              ease: 'linear',
+            }}
+            className="absolute text-rose-500/25 select-none"
+            style={{
+              fontSize: `${p.size}px`,
+              color: activeTheme.hex,
+              filter: `drop-shadow(0 0 5px ${activeTheme.hex})`,
+            }}
+          >
+            ♥️
+          </motion.div>
+        ))}
+      </div>
 
       <AnimatePresence mode="wait">
         {screen === 'login' && (

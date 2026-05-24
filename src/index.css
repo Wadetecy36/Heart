@@ -20,6 +20,27 @@
   background-size: 100% 4px, 6px 100%;
 }
 
+.ambient-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.radial-fade {
+  mask-image: radial-gradient(circle at center, black 15%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at center, black 15%, transparent 75%);
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.floating-element {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
 @keyframes flicker {
   0% { opacity: 0.97; }
   50% { opacity: 1; }
