@@ -1,0 +1,6 @@
+{
+  "name": "A Gift For You // Beating Heart",
+  "description": "A beautiful, interactive, single-page glowing heart card with custom speed adjustments, romantic messages, color themes, and ambient sound synthesizers perfectly built for viewing on mobile devices.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

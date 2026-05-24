@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Google AI Studio App</title>
+    <!-- Quietly ignore third-party extension injection errors (e.g. MetaMask/web3) inside sandboxed preview contexts -->
+    <script>
+      (function() {
+        var ignoreErrors = ["metamask", "ethereum", "web3", "wallet"];
+        window.addEventListener("error", function(e) {
+          var msg = String(e.message || "").toLowerCase();
+          if (ignoreErrors.some(function(err) { return msg.indexOf(err) !== -1; })) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }, true);
+        window.addEventListener("unhandledrejection", function(e) {
+          var reason = String(e.reason?.message || e.reason || "").toLowerCase();
+          if (ignoreErrors.some(function(err) { return reason.indexOf(err) !== -1; })) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }, true);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

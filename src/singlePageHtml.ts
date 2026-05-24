@@ -1,0 +1,816 @@
+/**
+ * Returns a fully functional, highly polished single-page HTML file.
+ * Features:
+ * - Play Tailwind CDN + Orbit font family (Inter, Space Grotesk)
+ * - Rhythmic Web Audio synthesizer playing realistic natural heartbeat sub-thump
+ * - Dynamic customizable color themes (Pink/Rose, Purple, Cyan, Amber, Emerald)
+ * - Slider-adjustable heart transition frequency (BPM scale)
+ * - Interactive sparkle particle generator: tapping on touch screen floats romantic text / emojis upwards with fading physical velocity
+ * - Completely mobile responsive, zero scrollbars, absolute high fidelity.
+ */
+export function getSinglePageHtml(initialMsg: string = "i love you", initialTheme: string = "pink", initialBpm: number = 72): string {
+  const cleanMsg = initialMsg.replace(/"/g, '&quot;');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>A Special Gift For You</title>
+    <!-- Quietly ignore third-party extension injection errors (e.g. MetaMask/web3) inside sandboxed preview contexts -->
+    <script>
+      (function() {
+        var ignoreErrors = ["metamask", "ethereum", "web3", "wallet"];
+        window.addEventListener("error", function(e) {
+          var msg = String(e.message || "").toLowerCase();
+          if (ignoreErrors.some(function(err) { return msg.indexOf(err) !== -1; })) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }, true);
+        window.addEventListener("unhandledrejection", function(e) {
+          var reason = String(e.reason?.message || e.reason || "").toLowerCase();
+          if (ignoreErrors.some(function(err) { return reason.indexOf(err) !== -1; })) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }, true);
+      })();
+    </script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth keyframe animations for the beating pulse background effects */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.18; }
+            50% { transform: scale(1.05); opacity: 0.28; }
+            100% { transform: scale(0.95); opacity: 0.18; }
+        }
+        @keyframes float-up {
+            0% { transform: translateY(0) scale(0.4) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-200px) scale(1.2) rotate(var(--rotate-amount)); opacity: 0; }
+        }
+        .pulse-wave {
+            animation: pulse-ring var(--pulse-duration) ease-in-out infinite;
+        }
+        /* Custom styled Range Inputs */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #1e293b;
+            height: 6px;
+            border-radius: 9999px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 9999px;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            transition: all 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.2);
+            box-shadow: 0 0 14px rgba(59, 130, 246, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-neutral-950 text-slate-100 min-h-screen w-full font-sans select-none overflow-hidden relative flex flex-col justify-between p-4 pb-safe">
+
+    <!-- Theme Background Layer -->
+    <div id="backdrop-gradient" class="absolute inset-0 bg-gradient-to-b from-rose-950 via-neutral-950 to-[#1c0a15] transition-all duration-700 -z-10"></div>
+    
+    <!-- Sparkle overlays -->
+    <div class="absolute inset-0 opacity-15 pointer-events-none mix-blend-color-dodge -z-10" style="background-image: radial-gradient(#fff 1px, transparent 0), radial-gradient(#fff 1px, transparent 0); background-size: 24px 24px; background-position: 0 0, 12px 12px;"></div>
+
+    <!-- Passcode Login Gate -->
+    <div id="login-gate" class="flex-grow w-full max-w-md mx-auto flex flex-col justify-center items-center px-4 z-20 transition-all duration-500">
+        <div class="w-full bg-slate-900/40 border border-slate-800/80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl relative overflow-hidden text-center">
+            <!-- Absolute decoration halos -->
+            <div class="absolute -top-12 -right-12 w-28 h-28 bg-rose-500/10 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-12 -left-12 w-28 h-28 bg-violet-500/10 rounded-full blur-2xl"></div>
+
+            <div class="flex flex-col items-center">
+                <!-- Lock with Beating heart -->
+                <div class="w-16 h-16 rounded-full bg-slate-950/50 border border-slate-800 flex items-center justify-center relative mb-6">
+                    <i data-lucide="lock" class="text-slate-300 w-6 h-6 animate-pulse"></i>
+                    <i data-lucide="heart" class="text-rose-500 absolute w-5 h-5 -mt-3.5 -mr-3.5 fill-rose-500"></i>
+                </div>
+
+                <h1 class="text-2xl font-extrabold tracking-tight text-white mb-2 font-display">
+                    Secret Surprise Box
+                </h1>
+                <p class="text-xs text-slate-400 leading-normal mb-8 max-w-xs">
+                    A high-fidelity romantic experience has been crafted for you. Please enter the passcode to uncover the key.
+                </p>
+
+                <form onsubmit="handlePasscodeSubmit(event)" class="w-full space-y-4">
+                  <div class="relative">
+                    <input
+                      type="password"
+                      id="password-input"
+                      placeholder="Enter secret word..."
+                      class="w-full bg-slate-950/80 border border-slate-800/80 px-4 py-3.5 pr-10 text-center text-sm font-mono tracking-widest text-white rounded-xl focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500/30 transition-all placeholder:font-sans placeholder:tracking-normal placeholder:opacity-40"
+                    />
+                    <i data-lucide="key" class="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500"></i>
+                  </div>
+
+                  <p id="error-message" class="text-xs text-rose-400 font-mono font-bold hidden">
+                    Passcode incorrect. (Hint: her name)
+                  </p>
+
+                  <button
+                    type="submit"
+                    class="w-full py-3 px-4 bg-gradient-to-r from-rose-500 to-violet-600 hover:from-rose-600 hover:to-violet-700 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 cursor-pointer border border-rose-500/25"
+                  >
+                    <span>Unlock Surprise</span>
+                  </button>
+                </form>
+
+                <div class="mt-8 text-[9px] font-mono uppercase text-slate-500 tracking-wider">
+                  love protocol v1.0 // restricted access
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Romantic Progress Loader -->
+    <div id="loading-screen" class="flex-grow w-full max-w-sm mx-auto flex flex-col justify-center items-center px-4 z-20 text-center hidden transition-all duration-500">
+        <div class="relative w-24 h-24 mb-6 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border-2 border-t-rose-500 border-r-transparent border-b-violet-500 border-l-transparent opacity-60 animate-spin" style="animation-duration: 3s"></div>
+            <i data-lucide="heart" class="w-10 h-10 text-rose-500 fill-rose-500 animate-pulse"></i>
+        </div>
+
+        <h2 class="text-lg font-bold text-white tracking-wide uppercase mb-2 font-display">
+            Decrypting Heartspace
+        </h2>
+        
+        <!-- Realtime progress bar -->
+        <div class="w-full h-1.5 bg-slate-900 border border-slate-800/50 rounded-full overflow-hidden mb-4 relative">
+            <div id="loading-progress-bar" class="h-full bg-gradient-to-r from-rose-500 to-violet-500 transition-all duration-100" style="width: 0%"></div>
+        </div>
+
+        <!-- Dynamic romantic phase logs -->
+        <p id="loading-text" class="text-xs font-mono text-slate-400 uppercase tracking-widest min-h-[16px] transition-all duration-250">
+            Initializing romantic link...
+        </p>
+
+        <span id="loading-percentage" class="text-[10px] text-slate-500 font-mono mt-2">0% COMPLETE</span>
+    </div>
+
+    <!-- Main Interactive Interface -->
+    <div id="main-content" class="w-full flex-grow flex flex-col justify-between hidden opacity-0 transition-opacity duration-500">
+        <!-- Header navigation bar -->
+        <header class="w-full max-w-xl mx-auto flex justify-between items-center pt-2 z-20">
+            <div class="flex items-center gap-2">
+                <i data-lucide="heart" class="text-rose-400 animate-pulse w-5 h-5" id="header-icon"></i>
+                <span class="font-display text-xs font-bold uppercase tracking-widest text-slate-300">A Gift for You</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- Sound Synthesizer toggler -->
+                <button id="sound-btn" onclick="toggleSound()" class="p-2 border border-slate-800 bg-slate-900/40 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition-all shadow-lg focus:outline-none" title="Toggle audio synth">
+                    <i data-lucide="volume-2" class="w-4.5 h-4.5"></i>
+                </button>
+                <!-- Setup modifiers panel toggler -->
+                <button id="settings-btn" onclick="openSettings()" class="p-2 border border-slate-800 bg-slate-900/40 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition-all shadow-lg focus:outline-none">
+                    <i data-lucide="settings" class="w-4.5 h-4.5"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Beating Canvas area -->
+        <main class="flex-1 w-full max-w-xl mx-auto flex flex-col items-center justify-center relative z-20 py-4 min-h-[380px]" onclick="canvasTap(event)">
+            
+            <div class="text-center mb-8 pointer-events-none">
+                <h1 id="top-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2 transition-all duration-300">
+                    A Special Gift For You
+                </h1>
+                <p class="text-xs text-slate-400 uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5 opacity-80">
+                    <span>Touch screen to release love</span>
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400 animate-spin" style="animation-duration: 6s"></i>
+                </p>
+            </div>
+
+            <!-- Central Glowing heart presentation -->
+            <div class="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center cursor-pointer group hover:scale-[1.02] active:scale-95 transition-all duration-150">
+                <!-- Aura glow background element -->
+                <div id="heart-glow" class="absolute rounded-full w-48 h-48 opacity-25 blur-3xl transition-all duration-700" style="background-color: #f43f5e; box-shadow: 0 0 60px #f43f5e;"></div>
+
+                <!-- Heart SVG element carrying pulse speed -->
+                <div id="heart-wrapper" class="relative z-10 flex items-center justify-center transition-transform" style="transform-origin: center;">
+                    <svg id="heart-svg" class="w-44 h-44 sm:w-48 sm:h-48 drop-shadow-2xl transition-all duration-500" viewBox="0 0 24 24" fill="#f43f5e" style="filter: drop-shadow(0 0 25px rgba(244, 63, 94, 0.45));">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+
+                    <!-- Internal dynamic label metrics overlay -->
+                    <div class="absolute inset-x-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+                        <span id="heart-text" class="text-white font-extrabold text-[12px] sm:text-[13px] tracking-wide uppercase truncate max-w-[130px] drop-shadow-md transition-all duration-300">
+                            i love you
+                        </span>
+                        <span id="heart-bpm-text" class="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-slate-200 mt-1 opacity-80 leading-none">
+                            72 BPM
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Outer pulsing radar ripple wave -->
+                <span id="pulsar-wave" class="absolute w-36 h-36 rounded-full border border-white/10 opacity-20 pointer-events-none" style="animation: pulse-ring 1s ease-in-out infinite"></span>
+            </div>
+
+            <div class="mt-8 text-center text-xs font-mono text-slate-500 uppercase tracking-wider">
+                <span>Total Hearts Sent:</span>
+                <strong id="counter" class="text-rose-400 font-bold text-sm ml-1 transition-colors duration-300">0</strong>
+            </div>
+
+        </main>
+
+    <!-- Screen drawer customizer settings bar modal -->
+    <div id="drawer" class="fixed inset-0 z-50 flex items-end justify-center p-4 bg-black/70 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <!-- Dialog backdrop dismiss trigger -->
+        <div class="absolute inset-0" onclick="closeSettings()"></div>
+
+        <!-- Customizer modal content panel -->
+        <div id="drawer-child" class="w-full max-w-lg bg-[#0f172a] border border-slate-800 rounded-t-2xl p-6 relative z-10 text-left shadow-2xl transform translate-y-32 transition-transform duration-300">
+            <!-- Decorative handle -->
+            <div class="w-12 h-1 bg-slate-800 rounded mx-auto mb-5"></div>
+
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-5">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="palette" class="text-rose-400 w-5 h-5" id="palette-icon"></i>
+                    <span class="text-sm font-extrabold text-white tracking-wide uppercase">Customize Your Gift</span>
+                </div>
+                <button onclick="closeSettings()" class="p-1.5 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-4.5 h-4.5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Custom string message block -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Custom Love Message</label>
+                    <input type="text" id="msg-input" oninput="updateMessage(this.value)" placeholder="e.g. marry me / happy together" class="w-full bg-[#0b1120] p-3 border border-slate-800 text-sm text-slate-100 rounded focus:outline-none focus:border-blue-500 font-medium">
+                </div>
+
+                <!-- Color profiles choice array dials -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Color Theme Profile</label>
+                    <div class="grid grid-cols-5 gap-1.5">
+                        <button onclick="setTheme('pink')" class="theme-btn text-[10px] py-1.5 border border-rose-500/40 text-rose-300 bg-rose-500/10 rounded font-mono font-bold uppercase transition-all tracking-tight" id="theme-pink-btn">pink</button>
+                        <button onclick="setTheme('purple')" class="theme-btn text-[10px] py-1.5 border border-purple-500/40 text-purple-300 bg-purple-500/10 rounded font-mono font-bold uppercase transition-all tracking-tight" id="theme-purple-btn">purple</button>
+                        <button onclick="setTheme('cyan')" class="theme-btn text-[10px] py-1.5 border border-cyan-500/40 text-cyan-300 bg-cyan-500/10 rounded font-mono font-bold uppercase transition-all tracking-tight" id="theme-cyan-btn">cyan</button>
+                        <button onclick="setTheme('amber')" class="theme-btn text-[10px] py-1.5 border border-amber-500/40 text-amber-300 bg-amber-500/10 rounded font-mono font-bold uppercase transition-all tracking-tight" id="theme-amber-btn">amber</button>
+                        <button onclick="setTheme('emerald')" class="theme-btn text-[10px] py-1.5 border border-emerald-500/40 text-emerald-300 bg-emerald-500/10 rounded font-mono font-bold uppercase transition-all tracking-tight" id="theme-emerald-btn">emerald</button>
+                    </div>
+                </div>
+
+                <!-- Heart frequency slider interface scale -->
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Heartbeat Frequency (BPM)</label>
+                        <span id="bpm-badge" class="text-xs text-white font-bold bg-[#0b1120] px-2 py-0.5 border border-slate-800 rounded font-mono">72 BPM</span>
+                    </div>
+                    <input type="range" id="bpm-slider" min="50" max="115" value="72" oninput="updateBpm(this.value)" class="w-full cursor-pointer">
+                </div>
+
+                <!-- Sound synthesizer logic control toggle -->
+                <div class="flex items-center justify-between py-2.5 border-t border-slate-800 mt-2 text-sm text-slate-300">
+                    <span class="font-bold text-slate-400 uppercase tracking-widest text-xs">Heartbeat thump synth</span>
+                    <button id="modal-sound-btn" onclick="toggleSound()" class="px-4 py-1.5 rounded-full border border-emerald-500 text-emerald-400 bg-emerald-500/10 text-xs font-mono font-bold uppercase tracking-wider transition-all focus:outline-none">
+                        audible
+                    </button>
+                </div>
+            </div>
+
+            <!-- Complete close action apply dials button -->
+            <button onclick="closeSettings(); playSuccessTone()" class="w-full mt-5 py-3 border border-transparent rounded-xl text-center text-xs tracking-[0.2em] font-extrabold uppercase bg-rose-500 hover:bg-rose-600 text-white transition-all shadow-lg active:scale-95" id="apply-btn">
+                Apply Details
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile-centric footer branding note page alignment -->
+    <footer class="w-full text-center py-2 z-20 pointer-events-none">
+        <p class="text-[9px] font-mono tracking-[0.3em] text-slate-500 uppercase">
+            for someone very special // touch screen
+        </p>
+    </footer>
+
+    <!-- Particle Sparkle Canvas overlay container -->
+    <div id="particle-container" class="fixed inset-0 pointer-events-none z-30"></div>
+
+    <!-- Active logical setup for the whole single page application -->
+    <script>
+        // Init state values
+        let currentTheme = '${initialTheme}';
+        let currentMessage = '${cleanMsg}';
+        let currentBpm = ${initialBpm};
+        let audioMuted = false;
+        let loveCount = 0;
+        let heartInterval = null;
+
+        // Sound Engine constants using modern high stability oscillator & filter synthesis inside the browser
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playHeartThump() {
+            if (audioMuted) return;
+            try {
+                const ctx = getAudioContext();
+                
+                // Deep low sub synth drum
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                // Low sub bass kick
+                osc.frequency.setValueAtTime(60, ctx.currentTime);
+                // Frequency sweep downwards for realistic punch thump
+                osc.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 0.15);
+                
+                gain.gain.setValueAtTime(1.5, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            } catch (err) {
+                console.log("Audio not support or gesture gated trigger needed.");
+            }
+        }
+
+        function playBubblePop() {
+            if (audioMuted) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                const rFreq = 220 + Math.random() * 330;
+                osc.frequency.setValueAtTime(rFreq, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(rFreq * 2.5, ctx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            } catch(e){}
+        }
+
+        function playSuccessTone() {
+            if (audioMuted) return;
+            try {
+                const ctx = getAudioContext();
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc1.type = 'sine';
+                osc2.type = 'sine';
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc1.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                osc2.frequency.setValueAtTime(659.25, ctx.currentTime); // E5
+                osc1.frequency.setValueAtTime(523.25, ctx.currentTime);
+                osc2.frequency.exponentialRampToValueAtTime(1046.50, ctx.currentTime + 0.25); // high oct
+                
+                gain.gain.setValueAtTime(0.18, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
+                
+                osc1.start();
+                osc2.start();
+                osc1.stop(ctx.currentTime + 0.35);
+                osc2.stop(ctx.currentTime + 0.35);
+            } catch(e){}
+        }
+
+        // Apply theme CSS variables dynamically
+        const themesMap = {
+            pink: {
+                bg: 'linear-gradient(to bottom, #4c0519, #0a0a0a, #1c0a15)',
+                hex: '#f43f5e',
+                textClass: 'text-rose-400',
+                glow: 'rgba(244, 63, 94, 0.45)',
+            },
+            purple: {
+                bg: 'linear-gradient(to bottom, #2e1065, #0a0a0a, #140a24)',
+                hex: '#a855f7',
+                textClass: 'text-purple-400',
+                glow: 'rgba(168, 85, 247, 0.45)',
+            },
+            cyan: {
+                bg: 'linear-gradient(to bottom, #164e63, #0a0a0a, #0a1c24)',
+                hex: '#06b6d4',
+                textClass: 'text-cyan-400',
+                glow: 'rgba(6, 182, 212, 0.45)',
+            },
+            amber: {
+                bg: 'linear-gradient(to bottom, #451a03, #0a0a0a, #1f1003)',
+                hex: '#f59e0b',
+                textClass: 'text-amber-400',
+                glow: 'rgba(245, 158, 11, 0.45)',
+            },
+            emerald: {
+                bg: 'linear-gradient(to bottom, #022c22, #0a0a0a, #051a13)',
+                hex: '#10b981',
+                textClass: 'text-emerald-400',
+                glow: 'rgba(16, 185, 129, 0.45)',
+            }
+        };
+
+        function applyThemeStyles() {
+            const data = themesMap[currentTheme] || themesMap.pink;
+            
+            // Background
+            document.getElementById('backdrop-gradient').style.backgroundImage = data.bg;
+            
+            // Header heart
+            const headerIcon = document.getElementById('header-icon');
+            headerIcon.className = "animate-pulse w-5 h-5 transition-all text-neutral-300 " + data.textClass;
+            
+            // Central heart SVG filled color & glow filter properties
+            const hSvg = document.getElementById('heart-svg');
+            hSvg.setAttribute('fill', data.hex);
+            hSvg.style.filter = "drop-shadow(0 0 25px " + data.glow + ")";
+            
+            // Central aura backplate glow
+            const backGlow = document.getElementById('heart-glow');
+            backGlow.style.backgroundColor = data.hex;
+            backGlow.style.boxShadow = "0 0 60px " + data.hex;
+            
+            // Counter numbers accent colors
+            const counter = document.getElementById('counter');
+            counter.className = "font-bold text-sm ml-1 transition-colors duration-300 " + data.textClass;
+            
+            // Settings dialog accent icons
+            document.getElementById('palette-icon').className = "w-5 h-5 transition-colors " + data.textClass;
+            
+            // Custom submission buttons accent layouts
+            const applyBtn = document.getElementById('apply-btn');
+            applyBtn.className = "w-full mt-5 py-3 border border-transparent rounded-xl text-center text-xs tracking-[0.2em] font-extrabold uppercase text-white transition-all shadow-lg active:scale-95";
+            applyBtn.style.backgroundColor = data.hex;
+            applyBtn.style.boxShadow = "0 0 16px " + data.glow;
+
+            // Mark selecting state index pill borders
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.className = btn.className.replace(/bg-\\S+ border-\\S+ text-white/g, '');
+                btn.style.borderColor = '';
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
+            });
+            const relativeBtn = document.getElementById('theme-' + currentTheme + '-btn');
+            if (relativeBtn) {
+                relativeBtn.style.borderColor = data.hex;
+                relativeBtn.style.backgroundColor = data.hex;
+                relativeBtn.style.color = '#ffffff';
+                relativeBtn.style.boxShadow = "0 0 10px " + data.glow;
+            }
+        }
+
+        // Initialize heartbeat intervals triggered instantly
+        function setupHeartbeatLoop() {
+            if (heartInterval) clearInterval(heartInterval);
+            
+            // Pulse beat triggers synchronized with Web Synth thumps
+            const durationSec = 60 / currentBpm;
+            
+            // Set CSS animation speeds dynamically
+            document.documentElement.style.setProperty('--pulse-duration', durationSec + 's');
+            
+            // Apply scale animations via interval on wrapper so there are no CSS block delays
+            const wrapper = document.getElementById('heart-wrapper');
+            const pulseWave = document.getElementById('pulsar-wave');
+            
+            heartInterval = setInterval(() => {
+                // Synthesizer trigger
+                playHeartThump();
+                
+                // Micro-bounce transform using scale ratios
+                wrapper.style.transform = 'scale(1.08)';
+                pulseWave.style.transform = 'scale(1.4)';
+                pulseWave.style.opacity = '0';
+                
+                // Spring back
+                setTimeout(() => {
+                    wrapper.style.transform = 'scale(0.97)';
+                }, 140);
+                setTimeout(() => {
+                    wrapper.style.transform = 'scale(1.04)';
+                }, 280);
+                setTimeout(() => {
+                    wrapper.style.transform = 'scale(1.0)';
+                    pulseWave.style.transform = 'scale(1.0)';
+                    pulseWave.style.opacity = '0.2';
+                }, 400);
+            }, durationSec * 1000);
+        }
+
+        // Spawns loving sparks floating upwards when screen is tapped
+        function canvasTap(event) {
+            // Dismiss canvas tappings inside the control header buttons
+            if (event.target.closest('#sound-btn') || event.target.closest('#settings-btn') || event.target.closest('#drawer-child')) {
+                return;
+            }
+            
+            loveCount++;
+            document.getElementById('counter').innerText = loveCount;
+            
+            // Sound feedback
+            playBubblePop();
+            
+            // Grab click position coordinates
+            const tapX = event.clientX;
+            const tapY = event.clientY;
+            
+            spawnSparkle(tapX, tapY);
+            spawnRipple(tapX, tapY);
+        }
+
+        function spawnRipple(x, y) {
+            const container = document.getElementById('particle-container');
+            if (!container) return;
+            const ripple = document.createElement('div');
+            
+            ripple.className = "absolute pointer-events-none rounded-full border-2 transition-all duration-700 ease-out";
+            
+            ripple.style.left = (x - 6) + 'px';
+            ripple.style.top = (y - 6) + 'px';
+            ripple.style.width = '12px';
+            ripple.style.height = '12px';
+            
+            const data = themesMap[currentTheme] || themesMap.pink;
+            ripple.style.borderColor = data.hex;
+            ripple.style.backgroundColor = data.hex + "15";
+            ripple.style.boxShadow = "0 0 15px " + data.hex + "40";
+            ripple.style.transform = "scale(1)";
+            ripple.style.opacity = "0.8";
+            
+            container.appendChild(ripple);
+            
+            // Force browser layout repaint then scale up
+            setTimeout(() => {
+                ripple.style.transform = "scale(18)";
+                ripple.style.opacity = "0";
+            }, 25);
+            
+            // Reclaim nodes safely
+            setTimeout(() => {
+                ripple.remove();
+            }, 750);
+        }
+
+        function spawnSparkle(x, y) {
+            const container = document.getElementById('particle-container');
+            const bubble = document.createElement('div');
+            
+            const compliments = [
+                currentMessage,
+                '❤️', '✨', 'always you', 'my favorite', 'beautiful', 'forever', 'smiling inside', '😘', '💕'
+            ];
+            const chosen = compliments[Math.floor(Math.random() * compliments.length)];
+            
+            bubble.innerText = chosen;
+            bubble.className = "absolute text-xs font-bold font-mono px-2 py-1 rounded-lg border shadow-lg whitespace-nowrap select-none overflow-hidden transition-all duration-100";
+            
+            // Custom physical parameters
+            const rRotate = (Math.random() - 0.5) * 45;
+            const rOffsetDistance = (Math.random() - 0.5) * 80;
+            const rHeight = 150 + Math.random() * 100;
+            
+            // Assign CSS variable for standard float up routines
+            bubble.style.setProperty('--rotate-amount', rRotate + 'deg');
+            bubble.style.left = (x - 20) + 'px';
+            bubble.style.top = (y - 15) + 'px';
+            
+            const data = themesMap[currentTheme] || themesMap.pink;
+            bubble.style.borderColor = data.hex + "35";
+            bubble.style.backgroundColor = "#020617ef";
+            bubble.style.color = data.hex;
+            bubble.style.boxShadow = "0 8px 16px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.05)";
+            bubble.style.textShadow = "0 0 8px " + data.hex;
+            
+            // Animation triggered
+            bubble.style.animation = "float-up 2.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards";
+            
+            container.appendChild(bubble);
+            
+            // Autoclean dom reference
+            setTimeout(() => {
+                bubble.remove();
+            }, 2700);
+        }
+
+        // Muters
+        function toggleSound() {
+            audioMuted = !audioMuted;
+            const btn = document.getElementById('sound-btn');
+            const modalBtn = document.getElementById('modal-sound-btn');
+            
+            if (audioMuted) {
+                btn.innerHTML = '<i data-lucide="volume-x" class="w-4.5 h-4.5"></i>';
+                btn.className = btn.className.replace('text-slate-400', 'text-red-400');
+                modalBtn.innerText = 'muted';
+                modalBtn.className = "px-4 py-1.5 rounded-full border border-slate-700 bg-slate-900 text-slate-500 text-xs font-mono font-bold uppercase tracking-wider transition-all focus:outline-none";
+            } else {
+                btn.innerHTML = '<i data-lucide="volume-2" class="w-4.5 h-4.5"></i>';
+                btn.className = btn.className.replace('text-red-400', 'text-slate-400');
+                modalBtn.innerText = 'audible';
+                modalBtn.className = "px-4 py-1.5 rounded-full border border-emerald-500 text-emerald-400 bg-emerald-500/10 text-xs font-mono font-bold uppercase tracking-wider transition-all focus:outline-none";
+                // Unmute audio sequence trigger
+                getAudioContext();
+                playBubblePop();
+            }
+            lucide.createIcons();
+        }
+
+        // Modal triggers
+        function openSettings() {
+            getAudioContext();
+            
+            // Prep setup control positions
+            document.getElementById('msg-input').value = currentMessage;
+            document.getElementById('bpm-slider').value = currentBpm;
+            document.getElementById('bpm-badge').innerText = currentBpm + ' BPM';
+            
+            const drawer = document.getElementById('drawer');
+            const drawerChild = document.getElementById('drawer-child');
+            
+            drawer.style.display = 'flex';
+            setTimeout(() => {
+                drawer.style.opacity = '1';
+                drawerChild.style.transform = 'translateY(0)';
+            }, 10);
+            
+            lucide.createIcons();
+        }
+
+        function closeSettings() {
+            const drawer = document.getElementById('drawer');
+            const drawerChild = document.getElementById('drawer-child');
+            
+            drawerChild.style.transform = 'translateY(100%)';
+            drawer.style.opacity = '0';
+            
+            setTimeout(() => {
+                drawer.style.style = '';
+                drawer.classList.add('hidden');
+            }, 300);
+        }
+
+        // Live input listeners
+        function updateMessage(val) {
+            currentMessage = val ? val.substring(0, 18) : "always you";
+            document.getElementById('heart-text').innerText = currentMessage;
+            
+            const topTitle = document.getElementById('top-title');
+            if (currentMessage === 'i love you') {
+                topTitle.innerText = "A Special Gift For You";
+            } else {
+                topTitle.innerText = currentMessage;
+            }
+        }
+
+        function setTheme(t) {
+            currentTheme = t;
+            applyThemeStyles();
+            playBubblePop();
+        }
+
+        function updateBpm(val) {
+            currentBpm = parseInt(val);
+            document.getElementById('bpm-badge').innerText = currentBpm + ' BPM';
+            document.getElementById('heart-bpm-text').innerText = currentBpm + ' BPM';
+            setupHeartbeatLoop();
+        }
+
+        function handlePasscodeSubmit(e) {
+            e.preventDefault();
+            const inputVal = document.getElementById('password-input').value;
+            getAudioContext();
+            playBubblePop();
+            
+            if (inputVal.trim().toLowerCase() === 'orphelia') {
+                // Hide gate, show loading
+                document.getElementById('login-gate').classList.add('hidden');
+                document.getElementById('loading-screen').classList.remove('hidden');
+                startHtmlLoader();
+            } else {
+                const errorEl = document.getElementById('error-message');
+                errorEl.classList.remove('hidden');
+                
+                // Shake the card (adds high fidelity!)
+                const card = document.querySelector('#login-gate > div');
+                card.style.transform = 'translateX(-10px)';
+                setTimeout(() => card.style.transform = 'translateX(10px)', 100);
+                setTimeout(() => card.style.transform = 'translateX(-8px)', 200);
+                setTimeout(() => card.style.transform = 'translateX(8px)', 300);
+                setTimeout(() => card.style.transform = 'translateX(0)', 400);
+
+                setTimeout(() => {
+                    errorEl.classList.add('hidden');
+                }, 2200);
+            }
+        }
+
+        function startHtmlLoader() {
+            let progress = 0;
+            const bar = document.getElementById('loading-progress-bar');
+            const txt = document.getElementById('loading-text');
+            const percent = document.getElementById('loading-percentage');
+            
+            const interval = setInterval(() => {
+                progress += 2;
+                if (progress < 25) {
+                    txt.innerText = 'Initializing romantic link...';
+                } else if (progress < 45) {
+                    txt.innerText = 'Connecting heartbeat frequencies...';
+                } else if (progress < 65) {
+                    txt.innerText = 'Generating custom color theme...';
+                } else if (progress < 85) {
+                    txt.innerText = 'Synthesizing high fidelity love...';
+                } else {
+                    txt.innerText = 'Opening your custom gift room...';
+                }
+                
+                bar.style.width = progress + '%';
+                percent.innerText = progress + '% COMPLETE';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        const mainScreen = document.getElementById('main-content');
+                        const loadingScreen = document.getElementById('loading-screen');
+                        
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            loadingScreen.classList.add('hidden');
+                            mainScreen.classList.remove('hidden');
+                            setTimeout(() => {
+                                mainScreen.style.opacity = '1';
+                            }, 50);
+                            
+                            // Initialize pulse beats and play success
+                            setupHeartbeatLoop();
+                            playSuccessTone();
+                        }, 400);
+                    }, 400);
+                }
+            }, 35);
+        }
+
+        // Document level load
+        window.addEventListener('load', () => {
+            // Setup icons
+            lucide.createIcons();
+            
+            // Set dynamic message initializers
+            updateMessage(currentMessage);
+            
+            // Bind theme values
+            applyThemeStyles();
+        });
+
+        // iOS audio click triggers
+        document.body.addEventListener('touchstart', () => {
+            getAudioContext();
+        }, { passive: true });
+    </script>
+</body>
+</html>`;
+}
