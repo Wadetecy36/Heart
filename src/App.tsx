@@ -100,7 +100,7 @@ export default function App() {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     audioEngine.playClick();
-    if (passwordInput.trim().toLowerCase() === 'orphelia') {
+    if (passwordInput.trim().toLowerCase() === 'princess') {
       setScreen('loading');
     } else {
       setLoginError(true);
@@ -273,7 +273,7 @@ export default function App() {
 
     const explosionWords = [
       customMessage,
-      '❤️', '💖', '💝', '💘', '💕', '💞', '💍', '✨', 'always you', 'my favorite', 'beautiful', 'forever', 'smiling inside', '😘', '💕', 'Melted!', 'Love Blast!', 'My Heart!', 'Sweetheart!', 'Orphelia', 'Denzel ❤️'
+      '❤️', '💖', '💝', '💘', '💕', '💞', '💍', '✨', 'always you', 'my favorite', 'beautiful', 'forever', 'smiling inside', '😘', '💕', 'Melted!', 'Love Blast!', 'My Heart!', 'Sweetheart!', 'Princess', 'Denzel ❤️'
     ];
 
     const newHearts: FloatingMessage[] = [];

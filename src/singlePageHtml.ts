@@ -725,7 +725,7 @@ export function getSinglePageHtml(initialMsg: string = "i love you", initialThem
             getAudioContext();
             playBubblePop();
             
-            if (inputVal.trim().toLowerCase() === 'orphelia') {
+            if (inputVal.trim().toLowerCase() === 'princess') {
                 // Hide gate, show loading
                 document.getElementById('login-gate').classList.add('hidden');
                 document.getElementById('loading-screen').classList.remove('hidden');
